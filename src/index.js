@@ -34,5 +34,5 @@ app.delete('/projects', (request, response) =>{
 })
 
 app.listen(3333, () => {
- console.log('🔒pai ta oon💻')
+ console.log('🔐pai ta oon💻')
 })
