@@ -1,5 +1,24 @@
-app.use(logRequest)
-app.use('/projects/:id', validateProjectId)
+const express = require('express');
+const { v4: uuid_v4 } = require('uuid');
+uuid_v4();
+
+const app = express();
+app.use(express.json())
+
+const projects = [];
+
+function logRequests(request, response, next) {
+  const { method, url } = request;
+
+  const logLabel = `[${method.toUpperCase()}] ${url}`
+
+  console.time(logLabel)
+
+  next(); //proximo middleware
+  console.timeEnd(logLabel)
+}
+
+app.use(logRequests);
 
 app.get("/projects", (request, response) => {
   const { title } = request.query
@@ -14,7 +33,7 @@ app.get("/projects", (request, response) => {
 app.post("/projects", (request, response) => {
   const { title, owner } = request.body
 
-  const project = { id: uuid(), title, owner }
+  const project = { id: uuid_v4(), title, owner }
 
   projects.push(project)
   return response.json(project)
