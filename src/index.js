@@ -1,6 +1,6 @@
 const express = require('express');
 const { v4: uuid_v4 } = require('uuid');
-uuid_v4();
+const isuuid = require('isuuid');
 
 const app = express();
 app.use(express.json())
@@ -17,8 +17,18 @@ function logRequests(request, response, next) {
   next(); //proximo middleware
   console.timeEnd(logLabel)
 }
+function validateProjectId(request, response, next) {
+  const { id } = request.params;
+
+  if (!isuuid(id)) {
+    return response.status(400).json({ error: 'Invalid project ID.' })
+
+  }
+  return next();
+}
 
 app.use(logRequests);
+app.use('/projects/:id', validateProjectId)
 
 app.get("/projects", (request, response) => {
   const { title } = request.query
